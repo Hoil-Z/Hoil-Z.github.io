@@ -1,7 +1,6 @@
----
-layout: home
----
+# 面试总结学习
 
+<<<<<<< HEAD
 自用面试问题总结学习
 
 ## 查看
@@ -10,3 +9,7 @@ layout: home
 
 [![qa]](http://qa.tswu.xyz/index)
 
+=======
+自用
+
+>>>>>>> master
