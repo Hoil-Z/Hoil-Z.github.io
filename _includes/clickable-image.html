@@ -25,28 +25,6 @@
             modalImg.src = this.src;
             captionText.innerHTML = this.alt;
 
-            document.onwheel = (e) => {
-                let delta = (e.wheelDelta && (e.wheelDelta > 0 ? 1 : -1))
-
-                if (delta > 0) {//放大
-                    // 向上滚
-                    let oWidth = this.offsetWidth;//取得图片的实际宽度
-                    let oHeight = this.offsetHeight; //取得图片的实际高度
-
-                    this.style.width = (oWidth + 50) + "px"
-                    this.style.height = (oHeight + 50 / oWidth * oHeight) + "px"
-
-                } else if (delta < 0) {//缩小
-                    //向下滚
-                    let oWidth = this.offsetWidth; //取得图片的实际宽度
-                    let oHeight = this.offsetHeight; //取得图片的实际高度
-                    if (this.el.offsetWidth > 100 || this.offsetHeight > 75) {//判断如果图片缩小到原图大小就停止缩小(100和75分别为原图的宽高)
-
-                        this.style.width = oWidth - 50 + "px"
-                        this.style.height = oHeight - 50 / oWidth * oHeight + "px"
-                    }
-                }
-            }
         }
     }
 </script>
