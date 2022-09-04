@@ -1,0 +1,248 @@
+<style>
+    .videoWrapper {
+        position: relative;
+        padding-bottom: 56.333%;
+        height: 0;
+        background: black;
+    }
+
+    .videoWrapper iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+</style>
+
+
+<script>
+    function get_youtube_id(url) {
+        var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+        return (url.match(p)) ? RegExp.$1 : false;
+    }
+
+    function vimeo_embed(url, el) {
+        var id = false;
+        $.ajax({
+            url: 'https://vimeo.com/api/oembed.json?url=' + url,
+            async: true,
+            success: function (response) {
+                if (response.video_id) {
+                    id = response.video_id;
+                    if (url.indexOf('autoplay=1') !== -1) var autoplay = 1; else var autoplay = 0;
+                    if (url.indexOf('loop=1') !== -1) var loop = 1; else var loop = 0;
+                    var theInnerHTML = '<div class="videoWrapper"><iframe src="https://player.vimeo.com/video/' + id + '/?byline=0&title=0&portrait=0';
+                    if (autoplay == 1) theInnerHTML += '&autoplay=1';
+                    if (loop == 1) theInnerHTML += '&loop=1';
+                    theInnerHTML += '" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>';
+                    el.innerHTML = theInnerHTML;
+                }
+            }
+        });
+    }
+
+    function video_embed() {
+        var p = document.getElementsByTagName('p');
+        for (var i = 0; i < p.length; i++) {
+            //check if this is an external url (that starts with https:// or http://
+            if (p[i].innerHTML.indexOf("http://") == 0 ||
+                p[i].innerHTML.indexOf("https://") == 0) {
+                var youtube_id = get_youtube_id(p[i].innerHTML);
+                if (youtube_id) {
+
+                    if (p[i].innerHTML.indexOf('loop=1') !== -1) var loop = 1; else var loop = 0;
+                    var theInnerHTML = '<button id=play onclick="">立即播放</button> <div class="videoWrapper"><iframe width="720" height="420" src="https://okjx.cc/?url=' + video_src;
+                    theInnerHTML += '" frameborder="0" allowfullscreen></iframe></div>';
+                    p[i].innerHTML = theInnerHTML;
+                }
+                if (p[i].innerHTML.indexOf('vimeo.com') !== -1) {
+                    //ask vimeo for the id and place the embed
+                    vimeo_embed(p[i].innerHTML, p[i]);
+                }
+            }
+        }
+    }
+
+    video_embed();
+
+    function mp3_embed() {
+        var p = document.getElementsByTagName('p');
+        for (var i = 0; i < p.length; i++) {
+            if (p[i].innerHTML.indexOf('.mp3') !== -1) {
+                var str = p[i].innerHTML.split('?');
+                if (str.length == 1) str[1] = '';
+                var str1 = str[1];
+                str1 = str1.replace('&', '').replace('&', '');
+                str1 = str1.replace('autoplay=1', '').replace('autoplay=0', '');
+                str1 = str1.replace('loop=1', '').replace('loop=0', '');
+                str1 = str1.replace('controls=0', '').replace('controls=1', '');
+
+                if (str[0].lastIndexOf('.mp3', str[0].length - 4) === str[0].length - 4 && str1.length == 0) {
+                    if (str[1].indexOf('autoplay=1') !== -1) var autoplay = 1; else var autoplay = 0;
+                    if (str[1].indexOf('loop=1') !== -1) var loop = 1; else var loop = 0;
+                    if (str[1].indexOf('controls=0') !== -1) var controls = 0; else var controls = 1;
+                    var newInnerHTML = '<audio';
+                    if (autoplay == 1) newInnerHTML += ' autoplay';
+                    if (loop == 1) newInnerHTML += ' loop';
+                    if (controls == 1) newInnerHTML += ' controls';
+                    newInnerHTML += '><source src="' + str[0] + '" type="audio/mpeg">Your browser does not support the audio element.</audio>';
+                    p[i].innerHTML = newInnerHTML;
+                }
+            }
+        }
+    }
+
+    mp3_embed();
+</script>
+
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv=x-ua-compatible content="IE=edge,chrome=1">
+    <meta charset=utf-8>
+    <meta http-equiv=content-language content="zh-CN">
+    <meta name=viewport content="width=device-width,initial-scale=1,user-scalable=no">
+    <title>全网vip视频解析 | 张文兵博客</title>
+    <link href=/static/libs/layui/css/layui.css rel=stylesheet>
+    <link href=/static/libs/font-awesome/css/font-awesome.min.css rel=stylesheet>
+    <link href="/static/css/global.css?v=20211130" rel=stylesheet>
+    <script src=/static/libs/layui/layui.js></script>
+    <meta name=keywords
+          content="vip视频解析,vip视频在线解析,vip解析,万能vip视频解析,vip视频全能解析,vip视频,手机vip视频解析,手机在线解析vip视频,优酷vip解析,爱奇艺vip解析,腾讯vip解析,乐视vip解析,芒果vip解析">
+    <meta name=description
+          content="张文兵博客VIP视频免费看，在线解析，vip视频解析，优酷vip解析，爱奇艺vip解析，腾讯vip解析，乐视vip解析，全网影视vip，芒果vip解析方便广大用户VIP视频服务，最新电影最新电视剧在线免费观看">
+    <style>@media screen and (max-width: 480px) {
+        #playWindow {
+            height: 200px
+        }
+    }</style>
+</head>
+<body>
+<nav class="blog-nav layui-header">
+    <div class=blog-container><a class=blog-logo href=/>张文兵博客</a>
+        <ul class=layui-nav lay-filter=nav>
+            <li class=layui-nav-item><a href=/><i class="fa fa-home fa-fw"></i> 首页</a></li>
+            <li class=layui-nav-item><a href=/plugin/tools/index><i class="fa fa-flask fa-fw"></i> 工具</a></li>
+            <li class=layui-nav-item><a href=/plugin/message/index><i class="fa fa-info fa-fw"></i> 留言板</a></li>
+        </ul>
+        <a class=blog-navicon href=javascript:;><i class="fa fa-navicon"></i></a></div>
+</nav>
+<div class=blog-body>
+    <div></div>
+    <div class=blog-container>
+        <div class=blog-main>
+            <div class="home-tips shadow"><i style=float:left;line-height:17px class="fa fa-volume-up"></i>
+                <div class=home-tips-container><span style=color:#009688>博客再次改版了，这次在细节方面做了一些调整。</span></div>
+            </div>
+            <form class=layui-form style=margin-bottom:10px>
+                <div class=layui-row>
+                    <div class="layui-col-md8 layui-col-md-offset2"
+                         style=margin-bottom:15px;text-align:center;overflow:hidden><p style=color:red;font-size:16px>
+                        默认接口不能播放请自行手动切换接口。所有接口全部来自互联网，如有侵权请联系我们处理。</p>
+                        <p style=color:red;font-size:16px>视频中的棋牌、赌博广告是开设在境外的非法诈骗网站，切勿相信！可以点击下面的广告支持博主。</p></div>
+                </div>
+                <div class=layui-row>
+                    <div class=layui-col-md2><select id=api lay-verify=api lay-filter=api name=api></select></div>
+                    <div class=layui-col-md7><input type=text name=url id=url placeholder=输入播放地址 required
+                                                    lay-verify=required autocomplete=off class=layui-input></div>
+                    <div class=layui-col-md2>
+                        <button class="layui-btn layui-btn-fluid" lay-submit id=play lay-filter=play>立即播放</button>
+                    </div>
+                </div>
+            </form>
+            <div id=video style=display:none></div>
+            <div class="layui-col-md8 layui-col-md-offset2" style=margin-top:15px;text-align:center;overflow:hidden>
+                <script type=text/javascript>(function () {
+                    var e = "_" + Math.random().toString(36).slice(2);
+                    document.write('<div style="" id="' + e + '"></div>'), (window.slotbydup = window.slotbydup || []).push({
+                        id: "u4666643",
+                        container: e
+                    })
+                })()</script>
+                <script type=text/javascript src=//cpro.baidustatic.com/cpro/ui/c.js async defer></script>
+            </div>
+            <script type=text/javascript src=/static/js/jquery.min.js></script>
+            <script>var logoPath = "@config.LogoPath";
+
+            function setSelectChecked(s, n) {
+                var e = document.getElementById(s), t;
+                if (typeof n == "number") {
+                    e.options[n].selected = !0;
+                    return
+                }
+                for (t = 0; t < e.options.length; t++) if (e.options[t].innerHTML == n) {
+                    e.options[t].selected = !0;
+                    break
+                }
+            }
+
+            function getUrlParam(n) {
+                var t = new RegExp("(^|&)" + n + "=([^&]*)(&|$)"), e = window.location.hash.substr(1).match(t);
+                if (e == null) if (e = window.location.search.substr(1).match(t), e == null) return null;
+                return unescape(e[2])
+            }
+
+            $(function () {
+                document.location.protocol == "https:" && (window.location.href = window.location.href.replace("https", "http")), layui.use(["form", "layer", "jquery"], function () {
+                    var t = layui.form, e = layui.$, n = layui.layer;
+                    t.on("select(api)", function () {
+                        e("#play").click()
+                    }), e.ajax({
+                        url: "/v1/api/dict/get?key=jx", type: "GET", dataType: "json", success: function (s) {
+                            var n = document.getElementById("video");
+                            n.innerHTML = '<iframe id="playWindow" style="width:100%;background:#000000;height:500px;" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" frameborder="0" border="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>', n.style.display = "block", e.each(s, function (o, n) {
+                                var s = e('<option value="' + n.Link + '">' + n.ApiName + "</option>");
+                                s.appendTo(e("#api")), t.render()
+                            })
+                        }, complete: function () {
+                            var t = getUrlParam("url"), n;
+                            e("#url").val(t), setSelectChecked("api", 0), e("#play").click(function () {
+                                var t = e("#api").find("option:selected").val(), n = e("#url").val();
+                                return e("#playWindow").attr("src", t + n), !1
+                            }), n = e("input[name=url]").val(), n.length > 0 && e("#play").click()
+                        }
+                    })
+                })
+            })</script>
+            <div class=clear></div>
+        </div>
+    </div>
+</div>
+<footer class=blog-footer><p><a href=http://beian.miit.gov.cn/>湘ICP备2020021630号</a></p>
+    <p><a href=//zhangwenbing.com>zhangwenbing.com</a> 版权所有</p>
+    <p>博客稳定运行:
+        <span id=htmer_time style=color:#0196e3>载入中...</span>
+        <script>function secondToDate(e) {
+            if (!e) return 0;
+            var t = new Array(0, 0, 0, 0, 0);
+            return e >= 365 * 24 * 3600 && (t[0] = parseInt(e / (365 * 24 * 3600)), e %= 365 * 24 * 3600), e >= 24 * 3600 && (t[1] = parseInt(e / (24 * 3600)), e %= 24 * 3600), e >= 3600 && (t[2] = parseInt(e / 3600), e %= 3600), e >= 60 && (t[3] = parseInt(e / 60), e %= 60), e > 0 && (t[4] = e), t
+        }</script>
+        <script type=text/javascript language=javascript>function setTime() {
+            var e = Math.round(new Date(Date.UTC(2016, 11, 1, 0, 0, 0)).getTime() / 1e3),
+                t = Math.round(((new Date).getTime() + 8 * 60 * 60 * 1e3) / 1e3);
+            currentTime = secondToDate(t - e), currentTimeHtml = currentTime[0] + "年" + currentTime[1] + "天" + currentTime[2] + "时" + currentTime[3] + "分" + currentTime[4] + "秒", document.getElementById("htmer_time").innerHTML = currentTimeHtml
+        }
+
+        setInterval(setTime, 1e3)</script>
+    </p>
+</footer>
+<script>var _hmt = _hmt || [];
+(function () {
+    var e = document.createElement("script"), t;
+    e.src = "https://hm.baidu.com/hm.js?bd2a96d20332d5d57b5f915d708e7625", t = document.getElementsByTagName("script")[0], t.parentNode.insertBefore(e, t)
+})()</script>
+<script>(function () {
+    var e = document.createElement("script"), t, n = window.location.protocol.split(":")[0];
+    n === "https" ? e.src = "https://zz.bdstatic.com/linksubmit/push.js" : e.src = "http://push.zhanzhang.baidu.com/push.js", t = document.getElementsByTagName("script")[0], t.parentNode.insertBefore(e, t)
+})()</script>
+<ul class="layui-nav layui-nav-tree layui-nav-side blog-nav-left layui-hide" lay-filter=nav>
+    <li class=layui-nav-item><a href=/><i class="fa fa-home fa-fw"></i> 首页</a></li>
+    <li class=layui-nav-item><a href=/plugin/message/index><i class="fa fa-info fa-fw"></i> 留言板</a></li>
+</ul>
+<div class="blog-mask animated layui-hide"></div>
+<script src=/static/js/global.js></script>
+</body>
+</html>
+
